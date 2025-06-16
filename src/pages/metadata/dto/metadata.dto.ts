@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform, Type } from "class-transformer";
+import { Transform } from "class-transformer";
 import { ArrayMaxSize, IsOptional, IsString, Length, ValidateNested } from "class-validator";
 
 export class MetadataDto {

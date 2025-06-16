@@ -1,13 +1,19 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { HeroSectionDto } from "../hero-section/dto/hero-section.dto";
-import { ArrayMaxSize, IsArray, IsOptional, ValidateNested } from "class-validator";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { IsOptional, IsString, Length, ValidateNested } from "class-validator";
+import { PageSectionDto } from "./page-sections.dto";
 import { Type } from "class-transformer";
-import { MetadataDto } from "../metadata/dto/metadata.dto";
 
-export class PageDto {
-    @ApiPropertyOptional({ type: MetadataDto })
-    @ValidateNested()
-    @Type(() => MetadataDto)
+export class CreatePageDto {
+    @ApiProperty({ type: 'string', description: 'Name of the page' })
+    @IsString()
+    @Length(3, 50, { message: 'Name must be between 3 and 50 characters' })
+    name: string;
+}
+
+export class UpdatePageDto extends PartialType(CreatePageDto) {
+    @ApiProperty({ type: PageSectionDto, isArray: true })
+    @Type(() => PageSectionDto)
+    @ValidateNested({ each: true })
     @IsOptional()
-    metadata?: MetadataDto;
+    sections?: PageSectionDto[];
 }

@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { ArrayMaxSize, IsArray, IsEnum, IsOptional, IsString, IsUUID, Length, ValidateNested } from "class-validator";
-import { ECtaVariant, HeroSectionCta } from "../entities/hero-section.entity";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Length, ValidateNested } from "class-validator";
+import { CTA, ECtaVariant } from "src/pages/blocks";
 
-class HeroSectionCtaDto implements HeroSectionCta {
+export class CTADto implements CTA {
     @ApiProperty({ type: 'string', description: 'Button Link' })
     @IsString()
     @Length(1, 100, { message: 'Link must be between 1 and 100 characters' })
@@ -26,6 +26,11 @@ class HeroSectionCtaDto implements HeroSectionCta {
 }
 
 export class HeroSectionDto {
+    @ApiPropertyOptional({ type: 'string', format: 'uuid' })
+    @IsUUID()
+    @IsOptional()
+    id?: string;
+
     @ApiPropertyOptional({ type: 'string' })
     @IsString()
     @Length(3, 50, { message: 'Title must be between 3 and 50 characters' })
@@ -45,11 +50,27 @@ export class HeroSectionDto {
     @IsOptional()
     imageId?: string | null = null;
 
-    @ApiPropertyOptional({ type: HeroSectionCtaDto, isArray: true })
+    @ApiPropertyOptional({ type: CTADto, isArray: true })
     @ValidateNested({ each: true })
-    @Type(() => HeroSectionCtaDto)
+    @Type(() => CTADto)
     @IsArray()
     @IsOptional()
     @ArrayMaxSize(2, { message: 'CTA must be less than 2' })
-    cta?: HeroSectionCta[] = [];
+    cta?: CTADto[] = [];
+}
+
+export class HeroSectionUpdateDto {
+    @ApiProperty({ type: HeroSectionDto, isArray: true, description: 'Hero sections of the page' })
+    @ValidateNested({ each: true })
+    @Type(() => HeroSectionDto)
+    @ArrayMaxSize(5, { message: 'Hero Sections must be less than 5' })
+    @ArrayMinSize(1, { message: 'At least one hero section is required' })
+    heroSections: HeroSectionDto[] = [];
+}
+
+export class HeroSectionUpdateQueryDto {
+    @ApiProperty({ type: 'string', description: 'Page slug' })
+    @IsString()
+    @IsNotEmpty()
+    page: string;
 }

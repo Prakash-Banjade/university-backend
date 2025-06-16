@@ -70,10 +70,10 @@ import { FeaturesModule } from './features/features.module';
       provide: APP_GUARD,
       useClass: ThrottlerGuard, // global rate limiting, but can be overriden in route level
     },
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard, // global auth guard
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard, // global auth guard
+    // },
   ],
 })
 export class AppModule { }
