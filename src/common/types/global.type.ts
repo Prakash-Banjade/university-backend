@@ -13,43 +13,6 @@ export enum EFileMimeType {
     PDF = 'application/pdf',
 }
 
-export enum EBlogType {
-    News = 'news',
-    Events = 'events',
-}
-
-export enum ESpecialization {
-    Cardiology = 'cardiology',
-    Gynecology = 'gynecology',
-    Pediatrics = 'pediatrics',
-    Orthopedics = 'orthopedics',
-    Neurology = 'neurology',
-    GeneralMedicine = 'general_medicine',
-    Dermatology = 'dermatology',
-    Ophthalmology = 'ophthalmology',
-    Orthodontics = 'orthodontics',
-}
-
-export enum EWeekDays {
-    Monday = 'monday',
-    Tuesday = 'tuesday',
-    Wednesday = 'wednesday',
-    Thursday = 'thursday',
-    Friday = 'friday',
-    Saturday = 'saturday',
-    Sunday = 'sunday',
-}
-
-export enum ELanguages {
-    Hindi = 'hindi',
-    English = 'english',
-    Nepali = 'nepali',
-    Spanish = 'spanish',
-    Korean = 'korean',
-    Chinese = 'chinese',
-    Japanese = 'japanese',
-}
-
 export enum EFaqType {
     General = 'general',
     Doctor = 'doctor',
@@ -58,4 +21,20 @@ export enum EFaqType {
     Billing = 'billing',
     Facility = 'facility',
     EmergencyCare = 'emergency_care',
+}
+
+export enum EAcademicDegree {
+    Post_Graduate = 'post_graduate',
+    Graduate = 'graduate',
+    Undergraduate = 'undergraduate',
+    PhD = 'phd',
+}
+
+export enum EAcademicFaculty {
+    Science = 'science',
+    Management = 'management',
+    Arts = 'arts',
+    Humanity = 'humanity',
+    Law = 'law',
+    Other = 'other',
 }

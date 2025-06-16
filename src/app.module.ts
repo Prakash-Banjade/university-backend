@@ -21,6 +21,7 @@ import { PagesModule } from './pages/pages.module';
 import { CompanyInfoModule } from './company-info/company-info.module';
 import { GeneralSettingModule } from './general-setting/general-setting.module';
 import { FeaturesModule } from './features/features.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { FeaturesModule } from './features/features.module';
     CompanyInfoModule,
     GeneralSettingModule,
     FeaturesModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [
