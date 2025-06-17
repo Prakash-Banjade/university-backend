@@ -1,8 +1,17 @@
+export enum EBlock {
+    Text = 'text',
+    Image = 'image',
+    Cards = 'cards',
+    RefItem = 'refItem'
+}
+
 export type TextBlock = {
-    type: 'text'
+    type: EBlock.Text
     headline: string
+    subheadline?: string
     body: string
-    cta: CTA[]
+    cta: CTA[],
+    align: 'left' | 'center' | 'right'
 }
 
 export enum ECtaVariant {
@@ -19,9 +28,11 @@ export interface CTA {
 }
 
 export type ImageBlock = {
-    type: 'image'
+    type: EBlock.Image
     url: string
     alt?: string
+    caption?: string
+    description?: string
     width?: number
     height?: number
 }
@@ -42,14 +53,14 @@ export enum ECardsBlockLayout {
 }
 
 export type CardsBlock = {
-    type: 'cards'
+    type: EBlock.Cards
     cards: Card[],
     layout: ECardsBlockLayout
     maxColumns?: number
 }
 
 export type RefItemBlock = {
-    type: 'refItems'
+    type: EBlock.RefItem
     ref: string; // 'blogs' | 'events' | 'publications' etc
     limit: number;
     order?: 'ASC' | 'DESC';

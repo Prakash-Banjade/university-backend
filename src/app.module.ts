@@ -22,6 +22,7 @@ import { CompanyInfoModule } from './company-info/company-info.module';
 import { GeneralSettingModule } from './general-setting/general-setting.module';
 import { FeaturesModule } from './features/features.module';
 import { CoursesModule } from './courses/courses.module';
+import { ContactQueriesModule } from './contact-queries/contact-queries.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { CoursesModule } from './courses/courses.module';
     GeneralSettingModule,
     FeaturesModule,
     CoursesModule,
+    ContactQueriesModule,
   ],
   controllers: [AppController],
   providers: [

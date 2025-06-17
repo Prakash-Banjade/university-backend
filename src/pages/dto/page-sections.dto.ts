@@ -1,21 +1,33 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUrl, Length, MaxLength, Min, ValidateNested } from "class-validator";
-import { Card, CardsBlock, ECardsBlockLayout, ImageBlock, RefItemBlock, TextBlock } from "../blocks";
+import { Card, CardsBlock, EBlock, ECardsBlockLayout, ImageBlock, RefItemBlock, TextBlock } from "../blocks";
 import { CTADto } from "../hero-section/dto/hero-section.dto";
+import { EAlignment } from "src/common/types/global.type";
 
 class BaseBlock {
-    type: 'image' | 'cards' | 'text' | 'refItems'
+    @ApiProperty({ enum: EBlock })
+    @IsEnum(EBlock)
+    type: EBlock
 }
 
 class TextBlockDto implements TextBlock {
-    type: 'text'
+    @ApiProperty({ enum: [EBlock.Text] })
+    @IsEnum([EBlock.Text])
+    type: EBlock.Text = EBlock.Text;
 
     @ApiProperty({ type: 'string' })
     @IsString()
     @Length(3, 50, { message: 'Headline must be between 3 and 50 characters' })
     @Transform(({ value }) => value?.trim())
     headline: string
+
+    @ApiProperty({ type: 'string' })
+    @IsString()
+    @Length(3, 300, { message: 'Subheadline must be between 3 and 300 characters' })
+    @Transform(({ value }) => value?.trim())
+    @IsOptional()
+    subheadline?: string = ""
 
     @ApiProperty({ type: 'string' })
     @IsString()
@@ -29,10 +41,16 @@ class TextBlockDto implements TextBlock {
     @ArrayMaxSize(2, { message: 'CTA must be less than 2' })
     @IsOptional()
     cta: CTADto[] = [];
+
+    @ApiProperty({ enum: EAlignment })
+    @IsEnum(EAlignment)
+    align: EAlignment
 }
 
 class ImageBlockDto implements ImageBlock {
-    type: 'image'
+    @ApiProperty({ enum: [EBlock.Image] })
+    @IsEnum([EBlock.Image])
+    type: EBlock.Image = EBlock.Image;
 
     @ApiProperty({ type: 'string', description: 'URL of the image' })
     @IsUrl()
@@ -44,6 +62,20 @@ class ImageBlockDto implements ImageBlock {
     @IsOptional()
     @Transform(({ value }) => value?.trim())
     alt?: string
+
+    @ApiProperty({ type: 'string', description: 'Caption for the image' })
+    @IsString()
+    @MaxLength(100, { message: 'Caption must be less than 100 characters' })
+    @IsOptional()
+    @Transform(({ value }) => value?.trim())
+    caption?: string
+
+    @ApiProperty({ type: 'string', description: 'Description of the image' })
+    @IsString()
+    @MaxLength(300, { message: 'Description must be less than 300 characters' })
+    @IsOptional()
+    @Transform(({ value }) => value?.trim())
+    description?: string
 
     @ApiProperty({ type: 'number', description: 'Width of the image' })
     @IsNumber()
@@ -90,7 +122,9 @@ class CardDto implements Card {
 }
 
 class CardsBlockDto implements CardsBlock {
-    type: 'cards'
+    @ApiProperty({ enum: [EBlock.Cards] })
+    @IsEnum([EBlock.Cards])
+    type: EBlock.Cards = EBlock.Cards;
 
     @ApiProperty({ type: 'string', enum: ECardsBlockLayout, description: 'Layout of the cards' })
     @IsEnum(ECardsBlockLayout)
@@ -111,7 +145,9 @@ class CardsBlockDto implements CardsBlock {
 }
 
 class RefItemBlockDto implements RefItemBlock {
-    type: 'refItems'
+    @ApiProperty({ enum: [EBlock.RefItem] })
+    @IsEnum([EBlock.RefItem])
+    type: EBlock.RefItem = EBlock.RefItem;
 
     @ApiProperty({ type: 'string', description: 'Reference of the items' })
     @IsString()
@@ -150,10 +186,10 @@ class PageBlocksDto {
         discriminator: {
             property: 'type',
             subTypes: [
-                { value: TextBlockDto, name: 'text' },
-                { value: ImageBlockDto, name: 'image' },
-                { value: CardsBlockDto, name: 'cards' },
-                { value: RefItemBlockDto, name: 'refItems' },
+                { value: TextBlockDto, name: EBlock.Text },
+                { value: ImageBlockDto, name: EBlock.Image },
+                { value: CardsBlockDto, name: EBlock.Cards },
+                { value: RefItemBlockDto, name: EBlock.RefItem },
             ],
         },
     })

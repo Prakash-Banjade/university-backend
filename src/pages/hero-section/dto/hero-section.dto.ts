@@ -1,7 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Length, ValidateNested } from "class-validator";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsDefined, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Length, ValidateIf, ValidateNested } from "class-validator";
 import { CTA, ECtaVariant } from "src/pages/blocks";
+import { EHeroLayoutTypes, THeroLayout } from "../entities/hero-section.entity";
+import { EAlignment, EAlignmentExcludeCenter } from "src/common/types/global.type";
 
 export class CTADto implements CTA {
     @ApiProperty({ type: 'string', description: 'Button Link' })
@@ -25,6 +27,32 @@ export class CTADto implements CTA {
     icon: string;
 }
 
+class BaseHeroLayoutDto {
+    @ApiProperty({ enum: EHeroLayoutTypes })
+    @IsEnum(EHeroLayoutTypes)
+    type: EHeroLayoutTypes
+}
+
+class JumbotronHeroLayoutDto {
+    @ApiProperty({ enum: [EHeroLayoutTypes.Jumbotron], default: EHeroLayoutTypes.Jumbotron })
+    @IsEnum([EHeroLayoutTypes.Jumbotron])
+    type: EHeroLayoutTypes = EHeroLayoutTypes.Jumbotron;
+
+    @ApiPropertyOptional({ enum: EAlignment, description: 'Alignment of the jumbotron hero layout content' })
+    @IsEnum(EAlignment)
+    alignment: EAlignment;
+}
+
+class SplitHeroLayoutDto {
+    @ApiProperty({ enum: [EHeroLayoutTypes.Split_Hero], default: EHeroLayoutTypes.Split_Hero })
+    @IsEnum([EHeroLayoutTypes.Split_Hero])
+    type: EHeroLayoutTypes = EHeroLayoutTypes.Split_Hero;
+
+    @ApiPropertyOptional({ enum: EAlignmentExcludeCenter, description: 'Alignment of the split hero layout content' })
+    @IsEnum(EAlignmentExcludeCenter)
+    imagePosition: EAlignmentExcludeCenter;
+}
+
 export class HeroSectionDto {
     @ApiPropertyOptional({ type: 'string', format: 'uuid' })
     @IsUUID()
@@ -33,17 +61,17 @@ export class HeroSectionDto {
 
     @ApiPropertyOptional({ type: 'string' })
     @IsString()
-    @Length(3, 50, { message: 'Title must be between 3 and 50 characters' })
+    @Length(3, 50, { message: 'Headline must be between 3 and 50 characters' })
     @Transform(({ value }) => value?.trim())
     @IsOptional()
-    title?: string = "";
+    headline?: string = "";
 
     @ApiPropertyOptional({ type: 'string' })
     @IsString()
-    @Length(10, 200, { message: 'Subtitle must be between 10 and 200 characters' })
+    @Length(10, 200, { message: 'Subheadline must be between 10 and 200 characters' })
     @Transform(({ value }) => value?.trim())
     @IsOptional()
-    subtitle?: string = "";
+    subheadline?: string = "";
 
     @ApiPropertyOptional({ type: 'string' })
     @IsUUID()
@@ -57,6 +85,21 @@ export class HeroSectionDto {
     @IsOptional()
     @ArrayMaxSize(2, { message: 'CTA must be less than 2' })
     cta?: CTADto[] = [];
+
+    @ApiProperty({ type: JumbotronHeroLayoutDto, description: 'Layout of the hero section' })
+    @ValidateNested()
+    @Type(() => BaseHeroLayoutDto, {
+        keepDiscriminatorProperty: true,
+        discriminator: {
+            property: 'type',
+            subTypes: [
+                { value: JumbotronHeroLayoutDto, name: EHeroLayoutTypes.Jumbotron },
+                { value: SplitHeroLayoutDto, name: EHeroLayoutTypes.Split_Hero },
+            ],
+        },
+    })
+    @IsDefined()
+    layout: THeroLayout;
 }
 
 export class HeroSectionUpdateDto {

@@ -38,3 +38,14 @@ export enum EAcademicFaculty {
     Law = 'law',
     Other = 'other',
 }
+
+export enum EAlignment {
+    Left = 'left',
+    Center = 'center',
+    Right = 'right',
+}
+
+export enum EAlignmentExcludeCenter {
+    Left = 'left',
+    Right = 'right'
+}
