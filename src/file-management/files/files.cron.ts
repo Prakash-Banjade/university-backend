@@ -17,7 +17,9 @@ export class FilesCron {
         console.log("Removing unused files...")
 
         const unusedFilesInDb = await this.filesRepo.find({
-            where: {},
+            where: {
+                jobApplication: IsNull()
+            },
             select: { id: true, url: true }
         });
 

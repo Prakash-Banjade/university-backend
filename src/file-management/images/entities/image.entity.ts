@@ -1,7 +1,6 @@
 import { Blog } from "src/blogs-system/blogs/entities/blog.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { Course } from "src/courses/entities/course.entity";
-import { Feature } from "src/features/entities/feature.entity";
 import { GalleryCategory } from "src/gallery-system/gallery-categories/entities/gallery-category.entity";
 import { GeneralSetting } from "src/general-setting/entities/general-setting.entity";
 import { HeroSection } from "src/pages/hero-section/entities/hero-section.entity";
@@ -53,9 +52,6 @@ export class Image extends BaseEntity {
 
     @OneToOne(() => GeneralSetting, generalSetting => generalSetting.logo, { onDelete: 'CASCADE', nullable: true })
     generalSetting_logo: GeneralSetting;
-
-    @OneToOne(() => Feature, feature => feature.image, { onDelete: 'CASCADE', nullable: true })
-    feature_image: Feature;
 
     @OneToOne(() => Course, course => course.coverImage, { onDelete: 'CASCADE', nullable: true })
     course_coverImage: Course;

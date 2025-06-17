@@ -20,7 +20,6 @@ import { FaqModule } from './faq/faq.module';
 import { PagesModule } from './pages/pages.module';
 import { CompanyInfoModule } from './company-info/company-info.module';
 import { GeneralSettingModule } from './general-setting/general-setting.module';
-import { FeaturesModule } from './features/features.module';
 import { CoursesModule } from './courses/courses.module';
 import { ContactQueriesModule } from './contact-queries/contact-queries.module';
 import { JobsSystemModule } from './jobs-system/jobs-system.module';
@@ -66,7 +65,6 @@ import { AdmissionRequestsModule } from './admission-requests/admission-requests
     PagesModule,
     CompanyInfoModule,
     GeneralSettingModule,
-    FeaturesModule,
     CoursesModule,
     ContactQueriesModule,
     JobsSystemModule,

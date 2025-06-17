@@ -15,12 +15,11 @@ export enum EFileMimeType {
 
 export enum EFaqType {
     General = 'general',
-    Doctor = 'doctor',
-    Patient = 'patient',
-    Insurance = 'insurance',
-    Billing = 'billing',
-    Facility = 'facility',
-    EmergencyCare = 'emergency_care',
+    Admission = 'admission',
+    Courses = 'courses',
+    Academics = 'academics',
+    Financial = 'financial',
+    Others = 'others',
 }
 
 export enum EAcademicDegree {

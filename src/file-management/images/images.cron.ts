@@ -21,8 +21,9 @@ export class ImagesCron {
                 blog_coverImage: IsNull(),
                 blog_featuredImage: IsNull(),
                 heroSection_image: IsNull(),
-                feature_image: IsNull(),
                 generalSetting_logo: IsNull(),
+                course_coverImage: IsNull(),
+                galleryCategory: IsNull(),
             },
             select: { id: true, url: true }
         });
