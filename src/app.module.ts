@@ -25,6 +25,7 @@ import { CoursesModule } from './courses/courses.module';
 import { ContactQueriesModule } from './contact-queries/contact-queries.module';
 import { JobsSystemModule } from './jobs-system/jobs-system.module';
 import { GallerySystemModule } from './gallery-system/gallery-system.module';
+import { AdmissionRequestsModule } from './admission-requests/admission-requests.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { GallerySystemModule } from './gallery-system/gallery-system.module';
     ContactQueriesModule,
     JobsSystemModule,
     GallerySystemModule,
+    AdmissionRequestsModule,
   ],
   controllers: [AppController],
   providers: [

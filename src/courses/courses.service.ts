@@ -3,7 +3,7 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './entities/course.entity';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, FindOptionsSelect, Repository } from 'typeorm';
 import { CoursesQueryDto } from './dto/courses-query.dto';
 import paginatedData from 'src/utils/paginatedData';
 
@@ -60,10 +60,10 @@ export class CoursesService {
     return paginatedData(queryDto, querybuilder);
   }
 
-  async findOne(slug: string) {
+  async findOne(slug: string, select?: FindOptionsSelect<Course>) {
     const course = await this.courseRepo.findOne({
       where: { slug },
-      select: {
+      select: select ?? {
         id: true,
         slug: true,
         name: true,

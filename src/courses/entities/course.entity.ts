@@ -1,9 +1,10 @@
 import { InternalServerErrorException } from "@nestjs/common";
+import { AdmissionRequest } from "src/admission-requests/entities/admission-request.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { EAcademicDegree, EAcademicFaculty } from "src/common/types/global.type";
 import { Image } from "src/file-management/images/entities/image.entity";
 import { generateSlug } from "src/utils/generateSlug";
-import { Column, Entity, Index, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, OneToMany, OneToOne } from "typeorm";
 
 @Entity()
 export class Course extends BaseEntity {
@@ -43,4 +44,7 @@ export class Course extends BaseEntity {
 
     @Column({ type: 'text' })
     eligibility: string;
+
+    @OneToMany(() => AdmissionRequest, admissionRequest => admissionRequest.course)
+    admissionRequests: AdmissionRequest[]
 }

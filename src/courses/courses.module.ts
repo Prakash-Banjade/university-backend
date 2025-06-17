@@ -14,5 +14,6 @@ import { ImagesModule } from 'src/file-management/images/images.module';
   ],
   controllers: [CoursesController],
   providers: [CoursesService],
+  exports: [CoursesService],
 })
-export class CoursesModule {}
+export class CoursesModule { }
