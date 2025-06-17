@@ -34,7 +34,6 @@ export class CompanyInfoService {
                 mapLink: true,
                 phone: true,
                 socialProfiles: true,
-                emergencyPhone: true,
                 workingHours: true
             }
         });

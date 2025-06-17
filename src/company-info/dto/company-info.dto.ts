@@ -38,12 +38,6 @@ export class CompanyInfoDto {
     @ApiPropertyOptional({ type: 'string' })
     @IsString()
     @IsOptional()
-    @IsPhoneNumber('NP', { message: JSON.stringify({ message: 'Phone number is not valid', field: 'emergencyPhone' }) })
-    emergencyPhone?: string;
-
-    @ApiPropertyOptional({ type: 'string' })
-    @IsString()
-    @IsOptional()
     @Length(3, 50, { message: 'Working hours must be between 3 and 50 characters' })
     @Transform(({ value }) => value?.trim())
     workingHours?: string;

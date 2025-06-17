@@ -13,9 +13,6 @@ export class CompanyInfo extends BaseEntity {
     phone: string[];
 
     @Column({ type: 'varchar', default: '' })
-    emergencyPhone: string;
-
-    @Column({ type: 'varchar', default: '' })
     workingHours: string;
 
     @Column({ type: 'varchar', default: '' })
