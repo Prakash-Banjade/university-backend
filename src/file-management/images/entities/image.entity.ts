@@ -2,9 +2,10 @@ import { Blog } from "src/blogs-system/blogs/entities/blog.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { Course } from "src/courses/entities/course.entity";
 import { Feature } from "src/features/entities/feature.entity";
+import { GalleryCategory } from "src/gallery-system/gallery-categories/entities/gallery-category.entity";
 import { GeneralSetting } from "src/general-setting/entities/general-setting.entity";
 import { HeroSection } from "src/pages/hero-section/entities/hero-section.entity";
-import { Column, Entity, OneToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne } from "typeorm";
 
 @Entity()
 export class Image extends BaseEntity {
@@ -58,4 +59,7 @@ export class Image extends BaseEntity {
 
     @OneToOne(() => Course, course => course.coverImage, { onDelete: 'CASCADE', nullable: true })
     course_coverImage: Course;
+
+    @ManyToOne(() => GalleryCategory, galleryCategory => galleryCategory.images, { onDelete: 'CASCADE', nullable: true })
+    galleryCategory: GalleryCategory | null
 }

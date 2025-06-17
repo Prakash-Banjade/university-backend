@@ -24,6 +24,7 @@ import { FeaturesModule } from './features/features.module';
 import { CoursesModule } from './courses/courses.module';
 import { ContactQueriesModule } from './contact-queries/contact-queries.module';
 import { JobsSystemModule } from './jobs-system/jobs-system.module';
+import { GallerySystemModule } from './gallery-system/gallery-system.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { JobsSystemModule } from './jobs-system/jobs-system.module';
     CoursesModule,
     ContactQueriesModule,
     JobsSystemModule,
+    GallerySystemModule,
   ],
   controllers: [AppController],
   providers: [
