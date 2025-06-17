@@ -37,6 +37,23 @@ export class FilesService {
     }
   }
 
+  async findOne({
+    id,
+    mimeType
+  }: {
+    id: string,
+    mimeType?: EFileMimeType,
+  }) {
+    const file = await this.filesRepository.findOne({
+      where: { id, mimeType },
+      select: { id: true }
+    });
+    
+    if (!file) throw new NotFoundException('File not found');
+
+    return file;
+  }
+
   async findAllByIds(ids: string[], mimeType?: EFileMimeType | EFileMimeType[]) {
     const mimeTypeArrayQuery = mimeType ? In(Array.isArray(mimeType) ? mimeType : [mimeType]) : undefined;
     const mimeTypeArrayQueryObject = mimeTypeArrayQuery ? { mimeType: mimeTypeArrayQuery } : {};

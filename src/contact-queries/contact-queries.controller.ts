@@ -4,6 +4,7 @@ import { ContactQueriesService } from "./contact-queries.service";
 import { Public } from "src/common/decorators/setPublicRoute.decorator";
 import { ContactQueryDto } from "./dto/contact-query.dto";
 import { QueryDto } from "src/common/dto/query.dto";
+import { Throttle } from "@nestjs/throttler";
 
 @ApiTags('Contact Queries')
 @Controller('contact-queries')
@@ -14,6 +15,7 @@ export class ContactQueriesController {
 
   @Post()
   @Public()
+  @Throttle({ default: { limit: 1, ttl: 60000 } }) // 1 request per minute
   @ApiOperation({ summary: 'Submit a contact query' })
   async create(@Body() contactQueryDto: ContactQueryDto) {
     return await this.contactQueriesService.create(contactQueryDto);

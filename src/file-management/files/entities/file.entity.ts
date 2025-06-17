@@ -1,5 +1,6 @@
 import { BaseEntity } from "src/common/entities/base.entity";
-import { Column, Entity, Index } from "typeorm";
+import { JobApplication } from "src/jobs-system/job-applications/entities/job-application.entity";
+import { Column, Entity, Index, OneToOne } from "typeorm";
 
 @Entity()
 export class File extends BaseEntity {
@@ -27,4 +28,7 @@ export class File extends BaseEntity {
     | RELATIONS
     |--------------------------------------------------
     */
+
+    @OneToOne(() => JobApplication, (jobApplication) => jobApplication.resume, { onDelete: 'CASCADE', nullable: true })
+    jobApplication: JobApplication | null;
 }
