@@ -25,6 +25,7 @@ import { ContactQueriesModule } from './contact-queries/contact-queries.module';
 import { JobsSystemModule } from './jobs-system/jobs-system.module';
 import { GallerySystemModule } from './gallery-system/gallery-system.module';
 import { AdmissionRequestsModule } from './admission-requests/admission-requests.module';
+import { FormManagementModule } from './form-management/form-management.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { AdmissionRequestsModule } from './admission-requests/admission-requests
     JobsSystemModule,
     GallerySystemModule,
     AdmissionRequestsModule,
+    FormManagementModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiConflictResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PagesService } from './pages.service';
 import { CreatePageDto, UpdatePageDto } from './dto/page.dto';
@@ -33,5 +33,13 @@ export class PagesController {
     @ApiNotFoundResponse({ description: 'Page not found' })
     update(@Param('slug') slug: string, @Body() dto: UpdatePageDto) {
         return this.pagesService.update(slug, dto);
+    }
+
+    @Delete(':slug')
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Delete page' })
+    @ApiNotFoundResponse({ description: 'Page not found' })
+    remove(@Param('slug') slug: string) {
+        return this.pagesService.remove(slug);
     }
 }

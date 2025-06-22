@@ -1,9 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Page } from './entities/page.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreatePageDto, UpdatePageDto } from './dto/page.dto';
-import { generateSlug } from 'src/utils/generateSlug';
 import { HeroSection } from './hero-section/entities/hero-section.entity';
 import { Metadata } from './metadata/entities/metadata.entity';
 import { PageQueryDto, PageSelectKeys } from './dto/page-query.dto';
@@ -76,8 +75,16 @@ export class PagesService {
 
         if (dto.name && existing.name !== dto.name) existing.generateSlug();
 
+        // check if the slug is taken
+        const existingWithSameSlug = await this.pagesRepository.findOne({ where: { slug: existing.slug, id: Not(existing.id) }, select: { id: true } });
+        if (existingWithSameSlug) throw new ConflictException({ message: "Slug generated for this name already exists. Please choose different name." });
+
         await this.pagesRepository.save(existing);
 
         return { message: 'Page updated successfully' }
+    }
+
+    remove(slug: string) {
+        return this.pagesRepository.delete({ slug });
     }
 }
