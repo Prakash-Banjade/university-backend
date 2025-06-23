@@ -7,6 +7,7 @@ export type FieldValidationProp = {
 export enum FormFieldType {
     Text = 'text',
     Email = 'email',
+    File = 'file',
     Tel = 'tel',
     Select = 'select',
     Textarea = 'textarea',
@@ -36,8 +37,10 @@ export type FormFieldDef = {
     label: string
     placeholder?: string
     required: boolean
-    options?: FormFieldOption[]
-    dataSource?: FormFieldDataSourceProp
+    options?: FormFieldOption[] // used for select field
+    multiple?: boolean // used for select field
+    accept?: string // used for file field
+    dataSource?: FormFieldDataSourceProp // used for relation field
     validation?: FieldValidationProp
     order: number
 }

@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query } from '@nestjs/common';
 import { FormSubmissionsService } from './form-submissions.service';
 import { CreateFormSubmissionDto } from './dto/create-form-submission.dto';
-import { UpdateFormSubmissionDto } from './dto/update-form-submission.dto';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/setPublicRoute.decorator';
+import { FormSubmissionQueryDto } from './dto/form-submission-query.dto';
 
+@ApiTags("Form Submissions")
 @Controller('form-submissions')
 export class FormSubmissionsController {
-  constructor(private readonly formSubmissionsService: FormSubmissionsService) {}
+  constructor(private readonly formSubmissionsService: FormSubmissionsService) { }
 
   @Post()
+  @Public()
+  @ApiOperation({ summary: 'Create a new form submission' })
   create(@Body() createFormSubmissionDto: CreateFormSubmissionDto) {
     return this.formSubmissionsService.create(createFormSubmissionDto);
   }
 
   @Get()
-  findAll() {
-    return this.formSubmissionsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.formSubmissionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFormSubmissionDto: UpdateFormSubmissionDto) {
-    return this.formSubmissionsService.update(+id, updateFormSubmissionDto);
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all form submissions' })
+  findAll(@Query() queryDto: FormSubmissionQueryDto) {
+    return this.formSubmissionsService.findAll(queryDto);
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a specific form submission' })
+  @ApiParam({ name: 'id', type: 'string', description: 'ID of the form submission' })
   remove(@Param('id') id: string) {
-    return this.formSubmissionsService.remove(+id);
+    return this.formSubmissionsService.remove(id);
   }
 }

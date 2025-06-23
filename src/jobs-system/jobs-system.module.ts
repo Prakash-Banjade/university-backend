@@ -3,6 +3,9 @@ import { JobsModule } from './jobs/jobs.module';
 import { JobApplicationsModule } from './job-applications/job-applications.module';
 
 @Module({
-  imports: [JobsModule, JobApplicationsModule]
+  imports: [
+    JobsModule,
+    // JobApplicationsModule
+  ]
 })
-export class JobsSystemModule {}
+export class JobsSystemModule { }

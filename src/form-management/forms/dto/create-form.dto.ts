@@ -1,7 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Length, Min, ValidateNested } from "class-validator";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsBoolean, IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Length, Min, ValidateIf, ValidateNested } from "class-validator";
 import { FieldValidationProp, FormFieldDataSourceEntity, FormFieldDataSourceProp, FormFieldDef, FormFieldOption, FormFieldType } from "../form-fields";
+import { isRegExp } from "util/types";
+import { BadRequestException } from "@nestjs/common";
 
 class FieldValidationPropDto implements FieldValidationProp {
     @ApiPropertyOptional({ type: 'number', description: 'Minimum length of the field' })
@@ -19,6 +21,13 @@ class FieldValidationPropDto implements FieldValidationProp {
     @ApiPropertyOptional({ type: 'string', description: 'Regular expression to validate the field' })
     @IsString()
     @IsOptional()
+    @ValidateIf(o => {
+        if (o.pattern && !isRegExp(o.pattern)) {
+            throw new BadRequestException(`Invalid validation pattern`);
+        }
+
+        return true;
+    })
     pattern?: string;
 }
 
@@ -60,7 +69,7 @@ class FormFieldDefDto implements FormFieldDef {
     @ApiProperty({ type: 'string', description: 'Name of the field' })
     @IsString()
     @Length(3, 50, { message: 'Name must be between 3 and 50 characters' })
-    @Transform(({ value }) => value?.trim())
+    @Transform(({ value }) => value?.trim()?.replace(/\s+/g, '_')) // Replace spaces with underscores
     name: string;
 
     @ApiProperty({ type: 'string', description: 'Label of the field' })
@@ -81,6 +90,11 @@ class FormFieldDefDto implements FormFieldDef {
     @IsOptional()
     required: boolean = false;
 
+    @ApiPropertyOptional({ type: 'string', description: 'Accept attribute of the field' })
+    @IsString()
+    @ValidateIf((o: FormFieldDefDto) => o.type === FormFieldType.File)
+    accept?: string;
+
     @ApiProperty({ type: 'number', description: 'Order of the field' })
     @IsInt()
     @Min(0)
@@ -94,15 +108,21 @@ class FormFieldDefDto implements FormFieldDef {
 
     @ApiPropertyOptional({ type: [FormFieldOptionDto], description: 'Options of the field' })
     @IsArray()
-    @IsOptional()
     @ValidateNested({ each: true })
     @Type(() => FormFieldOptionDto)
+    @ArrayMinSize(1)
+    @ValidateIf((o: FormFieldDefDto) => o.type === FormFieldType.Select)
     options?: FormFieldOptionDto[];
+
+    @ApiPropertyOptional({ type: 'boolean', default: false })
+    @IsBoolean()
+    @ValidateIf((o: FormFieldDefDto) => o.type === FormFieldType.Select)
+    multiple?: boolean = false;
 
     @ApiPropertyOptional({ type: FormFieldDataSourcePropDto, description: 'Data source properties of the field' })
     @ValidateNested()
     @Type(() => FormFieldDataSourcePropDto)
-    @IsOptional()
+    @ValidateIf((o: FormFieldDefDto) => o.type === FormFieldType.Relation)
     dataSource?: FormFieldDataSourcePropDto;
 }
 

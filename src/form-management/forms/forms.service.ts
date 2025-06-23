@@ -3,7 +3,7 @@ import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Form } from './entities/form.entity';
-import { Not, Repository } from 'typeorm';
+import { FindOptionsSelect, Not, Repository } from 'typeorm';
 import { generateSlug } from 'src/utils/generateSlug';
 import { QueryDto } from 'src/common/dto/query.dto';
 import paginatedData from 'src/utils/paginatedData';
@@ -35,14 +35,19 @@ export class FormsService {
       .orderBy("form.createdAt", queryDto.order)
       .skip(queryDto.skip)
       .take(queryDto.take)
+      .select([
+        'form.id',
+        'form.slug',
+        'form.fields'
+      ])
 
     return paginatedData(queryDto, queryBuilder);
   }
 
-  async findOne(slug: string) {
+  async findOne(slug: string, select?: FindOptionsSelect<Form>) {
     const form = await this.formRepository.findOne({
       where: { slug },
-      select: {
+      select: select ?? {
         id: true,
         title: true,
         slug: true,
