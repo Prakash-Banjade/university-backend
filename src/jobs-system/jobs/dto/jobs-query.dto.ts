@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsOptional, IsString } from "class-validator";
 import { QueryDto } from "src/common/dto/query.dto";
 import { EJobStatus, EJobType } from "../entities/job.entity";
+import { Transform } from "class-transformer";
 
 export class JobsQueryDto extends QueryDto {
     @ApiPropertyOptional({ type: 'string', description: 'Department of the job' })
@@ -18,4 +19,10 @@ export class JobsQueryDto extends QueryDto {
     @IsString()
     @IsOptional()
     status: EJobStatus;
+
+    @ApiPropertyOptional({ type: Boolean, default: false })
+    @IsOptional()
+    @IsBoolean()
+    @Transform(({ value }) => value === 'true')
+    asOptions: boolean = false;
 }

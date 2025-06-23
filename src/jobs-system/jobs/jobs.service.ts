@@ -23,8 +23,6 @@ export class JobsService {
   findAll(queryDto: JobsQueryDto) {
     const querybuilder = this.jobRepo.createQueryBuilder('job')
       .orderBy("job.createdAt", queryDto.order)
-      .skip(queryDto.skip)
-      .take(queryDto.take)
       .where(new Brackets(qb => {
         if (queryDto.search) {
           qb.andWhere("LOWER(job.title) LIKE :search", { search: `${queryDto.search.toLowerCase()}%` });
@@ -42,6 +40,19 @@ export class JobsService {
           qb.andWhere("job.status = :status", { status: queryDto.status });
         }
       }))
+
+    if (queryDto.asOptions) {
+      querybuilder.select([
+        'job.id' as 'value',
+        'job.title' as 'label'
+      ]);
+
+      return querybuilder.getRawMany();
+    }
+
+    querybuilder
+      .skip(queryDto.skip)
+      .take(queryDto.take)
       .select([
         'job.id',
         'job.title',

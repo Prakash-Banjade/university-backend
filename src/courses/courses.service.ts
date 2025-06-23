@@ -31,8 +31,6 @@ export class CoursesService {
 
   findAll(queryDto: CoursesQueryDto) {
     const querybuilder = this.courseRepo.createQueryBuilder('course')
-      .take(queryDto.take)
-      .skip(queryDto.skip)
       .where(new Brackets(qb => {
         if (queryDto.search) {
           qb.andWhere("LOWER(course.title) LIKE :search", { search: `${queryDto.search.toLowerCase()}%` });
@@ -46,6 +44,19 @@ export class CoursesService {
           qb.andWhere("course.degree = :degree", { degree: queryDto.degree });
         }
       }))
+
+    if (queryDto.asOptions) {
+      querybuilder.select([
+        'course.name' as 'label',
+        'course.id' as 'value',
+      ])
+
+      return querybuilder.getRawMany();
+    }
+
+    querybuilder
+      .take(queryDto.take)
+      .skip(queryDto.skip)
       .select([
         'course.id',
         'course.name',
