@@ -22,3 +22,7 @@ export const enum AuthMessage {
 export const MAX_PREV_PASSWORDS = 3 as const;
 
 export const PASSWORD_SALT_COUNT = 12 as const;
+
+export const enum CustomException {
+    FormValidationException = 'FormValidationException'
+}

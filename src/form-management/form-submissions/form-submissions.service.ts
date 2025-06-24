@@ -1,17 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, FileValidator, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFormSubmissionDto } from './dto/create-form-submission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FormSubmission } from './entities/form-submission.entity';
 import { FormsService } from '../forms/forms.service';
 import { buildFormValidator, formatZodErrors } from 'src/common/utils';
 import { FormSubmissionQueryDto } from './dto/form-submission-query.dto';
 import paginatedData from 'src/utils/paginatedData';
+import { CustomException } from 'src/common/CONSTANTS';
+import { FormFieldDataSourceEntity } from '../forms/form-fields';
+import { Job } from 'src/jobs-system/jobs/entities/job.entity';
+import { Course } from 'src/courses/entities/course.entity';
 
 @Injectable()
 export class FormSubmissionsService {
   constructor(
     @InjectRepository(FormSubmission) private readonly formSubmissionRepo: Repository<FormSubmission>,
+    @InjectRepository(Job) private readonly jobsRepo: Repository<Job>,
+    @InjectRepository(Course) private readonly coursesRepo: Repository<Course>,
     private readonly formsService: FormsService,
   ) { }
 
@@ -22,9 +28,62 @@ export class FormSubmissionsService {
 
     const { success, data, error } = validator.safeParse(dto.data);
 
-    if (!success) throw new BadRequestException({ message: formatZodErrors(error) });
+    if (!success) throw new BadRequestException(formatZodErrors(error), { cause: CustomException.FormValidationException });
 
-    const formSubmission = this.formSubmissionRepo.create({ form, data });
+    const relationFields = form.fields.filter(field => field.type === 'relation');
+
+    const relations = await Promise.all(relationFields.map(async (field) => {
+      const ds = field.dataSource;
+
+      const fieldValue: string | string[] = data[field.name];
+
+      if (ds.entity === FormFieldDataSourceEntity.Job) {
+        const job = await this.jobsRepo.findOne({
+          where: { id: Array.isArray(fieldValue) ? In(fieldValue) : fieldValue },
+          select: { id: true, title: true }
+        });
+
+        if (typeof fieldValue === 'string' && !job) {
+          throw new NotFoundException('Job not found');
+        }
+
+        return [
+          field.name,
+          {
+            id: job.id,
+            value: job.title
+          }
+        ]
+      }
+
+      if (ds.entity === FormFieldDataSourceEntity.Course) {
+        const course = await this.coursesRepo.findOne({
+          where: { id: Array.isArray(fieldValue) ? In(fieldValue) : fieldValue },
+          select: { id: true, name: true }
+        });
+
+        if (typeof fieldValue === 'string' && !course) {
+          throw new NotFoundException('Course not found');
+        }
+
+        return [
+          field.name,
+          {
+            id: course.id,
+            value: course.name
+          }
+        ]
+
+      }
+    }));
+
+    const formSubmission = this.formSubmissionRepo.create({
+      form,
+      data: {
+        ...data,
+        ...Object.fromEntries(relations)
+      },
+    });
 
     await this.formSubmissionRepo.save(formSubmission);
 

@@ -45,6 +45,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
+    stopAtFirstError: true
   }));
 
   app.setGlobalPrefix('api');
@@ -56,4 +57,5 @@ async function bootstrap() {
   await app.listen(PORT, '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
+
 bootstrap();

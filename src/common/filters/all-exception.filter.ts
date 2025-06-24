@@ -1,4 +1,4 @@
-import { Catch, ArgumentsHost, HttpStatus, HttpException } from "@nestjs/common";
+import { Catch, ArgumentsHost, HttpStatus, HttpException, BadRequestException } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { QueryFailedError } from "typeorm";
@@ -28,18 +28,24 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
             type: 'Error',
         }
 
-        if (exception instanceof HttpException) { // due to http error
-            errResponse.statusCode = exception.getStatus()
-            errResponse.message = exception.getResponse();
-            errResponse.type = 'HttpException'
-        } else if (exception instanceof QueryFailedError) { // from type orm
+        if (exception instanceof QueryFailedError) { // from type orm
             errResponse.statusCode = 422
             errResponse.message = exception.message.replaceAll('\n', ' ')
-            errResponse.type = 'QueryFailedError'
-        } else if (exception instanceof ValidationError) { // from class-validator
-            errResponse.statusCode = HttpStatus.BAD_REQUEST;
-            errResponse.message = exception.constraints[Object.keys(exception.constraints)[0]]
-            errResponse.type = 'ValidationError'
+            errResponse.type = QueryFailedError.name
+        } else if (exception instanceof BadRequestException) { // due to http error
+            const exceptionResponse = exception.getResponse();
+            errResponse.statusCode = exception.getStatus()
+            errResponse.type = typeof exception.cause === "string" ? exception.cause : BadRequestException.name
+
+            if (typeof exceptionResponse !== "string" && "message" in exceptionResponse && Array.isArray(exceptionResponse.message)) { // handling Class-Validator error
+                errResponse.message = exceptionResponse.message
+            } else {
+                errResponse.message = exceptionResponse
+            }
+        } else if (exception instanceof HttpException) {
+            errResponse.statusCode = exception.getStatus()
+            errResponse.message = exception.getResponse()
+            errResponse.type = HttpException.name
         } else if (exception instanceof TypeError || exception instanceof Error) { // from type script
             errResponse.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
             errResponse.message = exception.message;

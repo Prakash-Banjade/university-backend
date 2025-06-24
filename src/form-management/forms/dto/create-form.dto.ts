@@ -33,14 +33,14 @@ class FieldValidationPropDto implements FieldValidationProp {
 
 class FormFieldOptionDto implements FormFieldOption {
     @ApiProperty({ type: 'string', description: 'Value of the option' })
-    @IsString()
-    @IsNotEmpty()
+    @IsString({ message: 'Value must be a string' })
+    @IsNotEmpty({ message: 'Value is required' })
     @Transform(({ value }) => value?.trim())
     value: string;
 
     @ApiProperty({ type: 'string', description: 'Label of the option' })
-    @IsString()
-    @IsNotEmpty()
+    @IsString({ message: 'Label must be a string' })
+    @IsNotEmpty({ message: 'Label is required' })
     @Transform(({ value }) => value?.trim())
     label: string;
 }
@@ -67,19 +67,19 @@ class FormFieldDefDto implements FormFieldDef {
     type: FormFieldType;
 
     @ApiProperty({ type: 'string', description: 'Name of the field' })
-    @IsString()
+    @IsString({ message: 'Name must be a string' })
     @Length(3, 50, { message: 'Name must be between 3 and 50 characters' })
-    @Transform(({ value }) => value?.trim()?.replace(/\s+/g, '_')) // Replace spaces with underscores
+    @Transform(({ value }) => value?.trim()?.replace(/\s+/g, '_').replace(/[^\w-]+/g, '')) // Replace spaces with underscores, remove special characters
     name: string;
 
     @ApiProperty({ type: 'string', description: 'Label of the field' })
-    @IsString()
+    @IsString({ message: 'Label must be a string' })
     @Length(3, 50, { message: 'Label must be between 3 and 50 characters' })
     @Transform(({ value }) => value?.trim())
     label: string;
 
     @ApiPropertyOptional({ type: 'string', description: 'Placeholder of the field', default: "" })
-    @IsString()
+    @IsString({ message: 'Placeholder must be a string' })
     @Length(3, 50, { message: 'Placeholder must be between 3 and 50 characters' })
     @Transform(({ value }) => value?.trim())
     @IsOptional()
@@ -91,13 +91,14 @@ class FormFieldDefDto implements FormFieldDef {
     required: boolean = false;
 
     @ApiPropertyOptional({ type: 'string', description: 'Accept attribute of the field' })
-    @IsString()
+    @IsString({ message: "Accept attribute must be a string" })
+    @IsNotEmpty({ message: "Accept attribute is required for file fields" })
     @ValidateIf((o: FormFieldDefDto) => o.type === FormFieldType.File)
     accept?: string;
 
     @ApiProperty({ type: 'number', description: 'Order of the field' })
-    @IsInt()
-    @Min(0)
+    @IsInt({ message: "Order must be an integer" })
+    @Min(0, { message: "Order must be greater than or equal to 0" })
     order: number;
 
     @ApiPropertyOptional({ type: FieldValidationPropDto, description: 'Validation properties of the field' })
@@ -107,7 +108,7 @@ class FormFieldDefDto implements FormFieldDef {
     validation?: FieldValidationPropDto;
 
     @ApiPropertyOptional({ type: [FormFieldOptionDto], description: 'Options of the field' })
-    @IsArray()
+    @IsArray({ message: "Options must be an array" })
     @ValidateNested({ each: true })
     @Type(() => FormFieldOptionDto)
     @ArrayMinSize(1)
@@ -122,6 +123,7 @@ class FormFieldDefDto implements FormFieldDef {
     @ApiPropertyOptional({ type: FormFieldDataSourcePropDto, description: 'Data source properties of the field' })
     @ValidateNested()
     @Type(() => FormFieldDataSourcePropDto)
+    @IsDefined({ message: "Data source properties are required for relation fields" })
     @ValidateIf((o: FormFieldDefDto) => o.type === FormFieldType.Relation)
     dataSource?: FormFieldDataSourcePropDto;
 }

@@ -4,6 +4,7 @@ import { CreateFormSubmissionDto } from './dto/create-form-submission.dto';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/setPublicRoute.decorator';
 import { FormSubmissionQueryDto } from './dto/form-submission-query.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags("Form Submissions")
 @Controller('form-submissions')
@@ -13,6 +14,7 @@ export class FormSubmissionsController {
   @Post()
   @Public()
   @ApiOperation({ summary: 'Create a new form submission' })
+  @Throttle({ default: { limit: 1, ttl: 60000 } }) // 1 request per minute
   create(@Body() createFormSubmissionDto: CreateFormSubmissionDto) {
     return this.formSubmissionsService.create(createFormSubmissionDto);
   }

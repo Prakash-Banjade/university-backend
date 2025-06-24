@@ -57,7 +57,15 @@ export function buildFormValidator(fields: FormFieldDef[]) {
 
             case FormFieldType.File:
                 // assume file fields are sent as URL strings
-                s = z.string().url({ message: `${f.label} must be a valid URL` })
+                s = z.string({ required_error: `${f.label} is required`, invalid_type_error: `${f.label} must be a string` })
+                    .min(1, { message: `${f.label} is required` })
+                    .url({ message: `${f.label} must be a valid URL` })
+                break
+
+            case FormFieldType.Relation:
+                s = z.string({ required_error: `${f.label} is required`, invalid_type_error: `${f.label} must be a string` })
+                    .min(1, { message: `${f.label} is required` })
+                    .uuid({ message: `${f.label} must be a valid UUID` })
                 break
 
             default:
@@ -107,21 +115,35 @@ export function buildFormValidator(fields: FormFieldDef[]) {
 }
 
 /**
- * Flattens a ZodError into a one-liner message:
- *   "lastName: Required; email: Required; phone: Required"
+ * Flattens a ZodError into an object:
+ *   { lastName: "is required", email: "is required", ... }
+ * If a field has multiple issues, messages are concatenated.
  */
-export function formatZodErrors(error: ZodError): string {
-    return error.issues
-        .map((issue: ZodIssue) => {
-            // field path, e.g. ['user','email'] → 'user.email'
-            const field = issue.path.join('.') || 'value'
-            // your custom mapping of Zod codes → messages
-            let msg = issue.message
-            // you can further customize based on issue.code or expected/received
-            if (issue.code === 'invalid_type' && msg.toLowerCase() === 'required') {
-                msg = 'is required'
-            }
-            return `${field} ${msg}`
-        })
-        .join('; ')
+export function formatZodErrors(error: ZodError): Record<string, string> {
+    const result: Record<string, string[]> = {}
+
+    for (const issue of error.issues) {
+        const field = issue.path.join('.') || 'value'
+
+        // Normalize message
+        let msg = issue.message
+        if (issue.code === 'invalid_type' && msg.toLowerCase() === 'required') {
+            msg = `${field} is required`
+        }
+
+        // Collect multiple messages per field
+        if (!result[field]) {
+            result[field] = []
+        }
+        result[field].push(msg)
+    }
+
+    // Flatten arrays into single strings
+    return Object.fromEntries(
+        Object.entries(result).map(([field, msgs]) => [
+            field,
+            // msgs.join('; ')
+            msgs[0]
+        ])
+    )
 }
