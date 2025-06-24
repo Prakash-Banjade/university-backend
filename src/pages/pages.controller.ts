@@ -20,6 +20,12 @@ export class PagesController {
         return this.pagesService.create(dto);
     }
 
+    @Get()
+    @ApiOperation({ summary: 'Get all pages' })
+    findAll() {
+        return this.pagesService.findAll();
+    }
+
     @Get(':slug')
     @Public()
     @ApiOperation({ summary: 'Get page by slug' })

@@ -15,18 +15,25 @@ export class GeneralSettingService {
     async set(dto: GeneralSettingsDto) {
         const existing = await this.generalSettingRepo.findOne({
             where: { id: Not(IsNull()) },
-            relations: { logo: true, },
-            select: { id: true, logo: { id: true } }
+            relations: { primaryLogo: true, secondaryLogo: true },
+            select: { id: true, primaryLogo: { id: true }, secondaryLogo: { id: true } }
         });
 
         if (!existing) throw new NotFoundException("General setting not found. Pleaes seed it first");
 
-        if (dto.logoId) {
-            const logo = await this.imagesService.findOne(dto.logoId);
-            existing.logo = logo;
+        if (dto.primaryLogoId) {
+            const primaryLogo = await this.imagesService.findOne(dto.primaryLogoId);
+            existing.primaryLogo = primaryLogo;
         }
 
-        if (dto.logoId === null) existing.logo = null;
+        if (dto.primaryLogoId === null) existing.primaryLogo = null;
+
+        if (dto.secondaryLogoId) {
+            const secondaryLogo = await this.imagesService.findOne(dto.secondaryLogoId);
+            existing.secondaryLogo = secondaryLogo;
+        }
+
+        if (dto.secondaryLogoId === null) existing.secondaryLogo = null;
 
         Object.assign(existing, dto);
 
@@ -38,11 +45,13 @@ export class GeneralSettingService {
     async get() {
         const existing = await this.generalSettingRepo.findOne({
             where: { id: Not(IsNull()) },
-            relations: { logo: true, },
+            relations: { primaryLogo: true, secondaryLogo: true },
             select: {
                 id: true,
                 companyName: true,
-                logo: { id: true, url: true }
+                primaryLogo: { id: true, url: true },
+                secondaryLogo: { id: true, url: true },
+                navLinks: true
             }
         });
 

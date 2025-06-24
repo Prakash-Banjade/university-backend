@@ -15,4 +15,4 @@ import { ImagesModule } from 'src/file-management/images/images.module';
   controllers: [GeneralSettingController],
   providers: [GeneralSettingService],
 })
-export class GeneralSettingModule {}
+export class GeneralSettingModule { }

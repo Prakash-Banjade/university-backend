@@ -5,7 +5,6 @@ import { PagesService } from './pages.service';
 import { PagesController } from './pages.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Page } from './entities/page.entity';
-import { HeroSection } from './hero-section/entities/hero-section.entity';
 
 @Module({
     imports: [
@@ -15,7 +14,8 @@ import { HeroSection } from './hero-section/entities/hero-section.entity';
         HeroSectionsModule,
         MetadatasModule,
     ],
-    providers: [PagesService],
     controllers: [PagesController],
+    providers: [PagesService],
+    exports: [PagesService],
 })
 export class PagesModule { }

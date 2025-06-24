@@ -50,8 +50,11 @@ export class Image extends BaseEntity {
     @OneToOne(() => HeroSection, heroSection => heroSection.image, { onDelete: 'CASCADE', nullable: true })
     heroSection_image: HeroSection;
 
-    @OneToOne(() => GeneralSetting, generalSetting => generalSetting.logo, { onDelete: 'CASCADE', nullable: true })
-    generalSetting_logo: GeneralSetting;
+    @OneToOne(() => GeneralSetting, generalSetting => generalSetting.primaryLogo, { nullable: true })
+    generalSetting_logoPrimary: GeneralSetting;
+
+    @OneToOne(() => GeneralSetting, generalSetting => generalSetting.secondaryLogo, { nullable: true })
+    generalSetting_logoSecondary: GeneralSetting;
 
     @OneToOne(() => Course, course => course.coverImage, { onDelete: 'CASCADE', nullable: true })
     course_coverImage: Course;

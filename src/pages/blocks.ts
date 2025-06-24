@@ -2,7 +2,8 @@ export enum EBlock {
     Text = 'text',
     Image = 'image',
     Cards = 'cards',
-    RefItem = 'refItem'
+    RefItem = 'refItem',
+    Form = 'form'
 }
 
 export type TextBlock = {
@@ -67,7 +68,12 @@ export type RefItemBlock = {
     refIds?: string[] // eg. specific blogIds
 }
 
-export type PageBlock = ImageBlock | CardsBlock | TextBlock | RefItemBlock
+export type FormBlock = {
+    type: EBlock.Form
+    formId: string
+}
+
+export type PageBlock = ImageBlock | CardsBlock | TextBlock | FormBlock | RefItemBlock
 
 export type PageSection = {
     headline: string

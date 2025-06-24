@@ -31,7 +31,18 @@ export class PagesService {
         return { message: 'Page created successfully' }
     }
 
-    findOne(slug: string, queryDto: PageQueryDto) {
+    findAll() {
+        return this.pagesRepository.find({
+            select: {
+                id: true,
+                slug: true,
+                name: true,
+                createdAt: true
+            }
+        });
+    }
+
+    async findOne(slug: string, queryDto: PageQueryDto) {
         const querybuilder = this.pagesRepository.createQueryBuilder('page')
             .where('page.slug = :slug', { slug })
             .select(['page.id', 'page.name', 'page.slug']);
@@ -63,7 +74,11 @@ export class PagesService {
             querybuilder.addSelect('page.sections');
         }
 
-        return querybuilder.getOne();
+        const page = await querybuilder.getOne();
+
+        if (!page) throw new NotFoundException('Page not found');
+
+        return page;
     }
 
     async update(slug: string, dto: UpdatePageDto) {

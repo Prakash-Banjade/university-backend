@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Metadata } from './entities/metadata.entity';
 import { MetadataService } from './metadata.service';
+import { MetadataController } from './metadata.controller';
 
 @Module({
   imports: [
@@ -9,6 +10,7 @@ import { MetadataService } from './metadata.service';
       Metadata,
     ]),
   ],
+  controllers: [MetadataController],
   providers: [MetadataService],
   exports: [MetadataService],
 })

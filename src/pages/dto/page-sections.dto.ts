@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUrl, Length, MaxLength, Min, ValidateNested } from "class-validator";
-import { Card, CardsBlock, EBlock, ECardsBlockLayout, ImageBlock, RefItemBlock, TextBlock } from "../blocks";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUrl, IsUUID, Length, MaxLength, Min, ValidateNested } from "class-validator";
+import { Card, CardsBlock, EBlock, ECardsBlockLayout, FormBlock, ImageBlock, RefItemBlock, TextBlock } from "../blocks";
 import { CTADto } from "../hero-section/dto/hero-section.dto";
 import { EAlignment } from "src/common/types/global.type";
 
@@ -173,6 +173,16 @@ class RefItemBlockDto implements RefItemBlock {
     refIds?: string[] = []
 }
 
+class FormBlockDto implements FormBlock {
+    @ApiProperty({ enum: [EBlock.Form] })
+    @IsEnum([EBlock.Form])
+    type: EBlock.Form = EBlock.Form;
+
+    @ApiProperty({ type: 'string', format: 'uuid', description: 'Form ID' })
+    @IsUUID()
+    formId: string;
+}
+
 class PageBlocksDto {
     @ApiProperty({ type: 'string', enum: ['horizontal', 'vertical'], description: 'Direction of the blocks' })
     @IsEnum(['horizontal', 'vertical'])
@@ -190,10 +200,11 @@ class PageBlocksDto {
                 { value: ImageBlockDto, name: EBlock.Image },
                 { value: CardsBlockDto, name: EBlock.Cards },
                 { value: RefItemBlockDto, name: EBlock.RefItem },
+                { value: FormBlockDto, name: EBlock.Form },
             ],
         },
     })
-    items: (TextBlockDto | ImageBlockDto | CardsBlockDto | RefItemBlockDto)[]
+    items: (TextBlockDto | ImageBlockDto | CardsBlockDto | RefItemBlockDto | FormBlockDto)[]
 }
 
 export class PageSectionDto {
