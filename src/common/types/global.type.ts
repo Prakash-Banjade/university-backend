@@ -48,3 +48,16 @@ export enum EAlignmentExcludeCenter {
     Left = 'left',
     Right = 'right'
 }
+
+export enum ELinkVariant {
+    Primary = 'primary',
+    Secondary = 'secondary',
+    Outline = 'outline'
+}
+
+export interface Link {
+    text: string,
+    link: string,
+    variant: ELinkVariant
+    icon?: string
+}

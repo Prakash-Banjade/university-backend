@@ -1,7 +1,6 @@
 import { BaseEntity } from "src/common/entities/base.entity";
-import { EAlignment, EAlignmentExcludeCenter } from "src/common/types/global.type";
+import { EAlignment, EAlignmentExcludeCenter, Link } from "src/common/types/global.type";
 import { Image } from "src/file-management/images/entities/image.entity";
-import { CTA } from "src/pages/blocks";
 import { Page } from "src/pages/entities/page.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
@@ -34,7 +33,7 @@ export class HeroSection extends BaseEntity {
     layout: THeroLayout;
 
     @Column({ type: 'jsonb', default: [] })
-    cta: CTA[];
+    cta: Link[];
 
     @Index()
     @ManyToOne(() => Page, (page) => page.heroSections, { onDelete: 'CASCADE' })

@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, ArrayMinSize, IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUrl, IsUUID, Length, MaxLength, Min, ValidateNested } from "class-validator";
-import { Card, CardsBlock, EBlock, ECardsBlockLayout, FormBlock, ImageBlock, RefItemBlock, TextBlock } from "../blocks";
-import { CTADto } from "../hero-section/dto/hero-section.dto";
+import { Card, CardsBlock, EBlock, ECardsBlockLayout, FormBlock, ImageBlock, RefItemBlock, TextBlock } from "../blocks.interface";
 import { EAlignment } from "src/common/types/global.type";
+import { LinkDto } from "../hero-section/dto/hero-section.dto";
 
 class BaseBlock {
     @ApiProperty({ enum: EBlock })
@@ -34,13 +34,13 @@ class TextBlockDto implements TextBlock {
     @MaxLength(1000, { message: 'Body must be less than 1000 characters' })
     body: string
 
-    @ApiProperty({ type: CTADto, isArray: true })
+    @ApiProperty({ type: LinkDto, isArray: true })
     @ValidateNested({ each: true })
-    @Type(() => CTADto)
+    @Type(() => LinkDto)
     @IsArray()
     @ArrayMaxSize(2, { message: 'CTA must be less than 2' })
     @IsOptional()
-    cta: CTADto[] = [];
+    cta: LinkDto[] = [];
 
     @ApiProperty({ enum: EAlignment })
     @IsEnum(EAlignment)

@@ -51,7 +51,6 @@ export class GeneralSettingService {
                 companyName: true,
                 primaryLogo: { id: true, url: true },
                 secondaryLogo: { id: true, url: true },
-                navLinks: true
             }
         });
 
@@ -75,17 +74,6 @@ export class GeneralSettingService {
         const existing = await this.generalSettingRepo.findOne({
             where: { id: Not(IsNull()) },
             select: { termsAndConditions: true }
-        });
-
-        if (!existing) throw new NotFoundException("General setting not found. Pleaes seed it first");
-
-        return existing;
-    }
-
-    async getFooterDescription() {
-        const existing = await this.generalSettingRepo.findOne({
-            where: { id: Not(IsNull()) },
-            select: { footerDescription: true }
         });
 
         if (!existing) throw new NotFoundException("General setting not found. Pleaes seed it first");

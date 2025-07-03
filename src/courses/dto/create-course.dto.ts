@@ -22,7 +22,6 @@ export class CreateCourseDto {
     description: string;
 
     @ApiProperty({ type: "number", description: "Duration of the course" })
-    @IsString()
     @IsInt()
     @Min(1)
     duration: number; // in years

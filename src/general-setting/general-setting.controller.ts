@@ -32,10 +32,4 @@ export class GeneralSettingController {
   async getTermsAndConditions() {
     return this.generalSettingService.getTermsAndConditions();
   }
-
-  @Get('footer-description')
-  @Public()
-  async getFooterDescription() {
-    return this.generalSettingService.getFooterDescription();
-  }
 }

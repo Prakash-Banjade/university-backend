@@ -1,11 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsDefined, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Length, ValidateIf, ValidateNested } from "class-validator";
-import { CTA, ECtaVariant } from "src/pages/blocks";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsDefined, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Length, ValidateNested } from "class-validator";
 import { EHeroLayoutTypes, THeroLayout } from "../entities/hero-section.entity";
-import { EAlignment, EAlignmentExcludeCenter } from "src/common/types/global.type";
+import { EAlignment, EAlignmentExcludeCenter, ELinkVariant, Link } from "src/common/types/global.type";
 
-export class CTADto implements CTA {
+export class LinkDto implements Link {
     @ApiProperty({ type: 'string', description: 'Button Link' })
     @IsString()
     @Length(1, 100, { message: 'Link must be between 1 and 100 characters' })
@@ -18,9 +17,9 @@ export class CTADto implements CTA {
     @Transform(({ value }) => value?.trim())
     text: string;
 
-    @ApiProperty({ enum: ECtaVariant, example: ECtaVariant.Primary })
-    @IsEnum(ECtaVariant)
-    variant: ECtaVariant;
+    @ApiProperty({ enum: ELinkVariant, example: ELinkVariant.Primary })
+    @IsEnum(ELinkVariant)
+    variant: ELinkVariant;
 
     @ApiProperty({ type: 'string' })
     @IsString()
@@ -78,13 +77,13 @@ export class HeroSectionDto {
     @IsOptional()
     imageId?: string | null = null;
 
-    @ApiPropertyOptional({ type: CTADto, isArray: true })
+    @ApiPropertyOptional({ type: LinkDto, isArray: true })
     @ValidateNested({ each: true })
-    @Type(() => CTADto)
+    @Type(() => LinkDto)
     @IsArray()
     @IsOptional()
     @ArrayMaxSize(2, { message: 'CTA must be less than 2' })
-    cta?: CTADto[] = [];
+    cta?: LinkDto[] = [];
 
     @ApiProperty({ type: JumbotronHeroLayoutDto, description: 'Layout of the hero section' })
     @ValidateNested()

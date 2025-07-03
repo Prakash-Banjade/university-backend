@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/common/entities/base.entity"
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, OneToMany, OneToOne } from "typeorm"
-import { PageSection } from "../blocks"
+import { PageSection } from "../blocks.interface"
 import { HeroSection } from "../hero-section/entities/hero-section.entity";
 import { Metadata } from "../metadata/entities/metadata.entity";
 import { generateSlug } from "src/utils/generateSlug";

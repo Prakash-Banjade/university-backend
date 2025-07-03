@@ -26,6 +26,7 @@ import { JobsSystemModule } from './jobs-system/jobs-system.module';
 import { GallerySystemModule } from './gallery-system/gallery-system.module';
 import { AdmissionRequestsModule } from './admission-requests/admission-requests.module';
 import { FormManagementModule } from './form-management/form-management.module';
+import { GlobalsModule } from './globals/globals.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { FormManagementModule } from './form-management/form-management.module';
     GallerySystemModule,
     // AdmissionRequestsModule,
     FormManagementModule,
+    GlobalsModule,
   ],
   controllers: [AppController],
   providers: [

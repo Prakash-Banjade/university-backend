@@ -1,3 +1,5 @@
+import { Link } from "src/common/types/global.type"
+
 export enum EBlock {
     Text = 'text',
     Image = 'image',
@@ -11,21 +13,8 @@ export type TextBlock = {
     headline: string
     subheadline?: string
     body: string
-    cta: CTA[],
+    cta: Link[],
     align: 'left' | 'center' | 'right'
-}
-
-export enum ECtaVariant {
-    Primary = 'primary',
-    Secondary = 'secondary',
-    Outline = 'outline'
-}
-
-export interface CTA {
-    text: string,
-    link: string,
-    variant: ECtaVariant
-    icon?: string
 }
 
 export type ImageBlock = {
